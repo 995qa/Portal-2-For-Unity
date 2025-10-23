@@ -47,6 +47,7 @@ public class PickUpManager : MonoBehaviour
 		if (hold)
 		{
 			heldProp.velocity = Vector3.zero;
+			heldProp.angularVelocity = Vector3.zero;
 			heldProp.MovePosition(transform.position+(transform.forward*1.2f));
 			Vector3 v = new Vector3(
                 pickupPropRot.x,

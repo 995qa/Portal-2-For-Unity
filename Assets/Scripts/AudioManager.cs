@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour 
 {
-    [SerializeField] AudioSource audioSource;
+    [SerializeField] private AudioMixerGroup[] mixerGroups;
     public static AudioManager Instance
     {
         get; private set;
@@ -18,16 +20,52 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
         }
+        DontDestroyOnLoad(gameObject);
     }
-    public void Play(AudioClip c, AudioSource a = null)
+    public void Play(Transform t,AudioClip c, Mixer mixerGroup = Mixer.None, float volume = 1, bool is3D = false, Vector3 position = new Vector3(), bool loop = false)
     {
-        if(a == null)
+        StartCoroutine(PlayAndDestroy(t, c, mixerGroup, volume, is3D, position, loop));
+    }
+    public IEnumerator PlayAndDestroy(Transform t, AudioClip c, Mixer mixerGroup, float volume, bool is3D, Vector3 position, bool loop)
+    {
+        if (c == null)
         {
-            audioSource.PlayOneShot(c);
+            Debug.LogWarning("AudioRitual: Null clip passed to coroutine.");
+            yield break;
         }
-        else
+        GameObject tempGO = new GameObject("TempAudioSource");
+        tempGO.transform.parent = t;
+        AudioSource aSource = tempGO.AddComponent<AudioSource>();
+        aSource.clip = c;
+        aSource.volume = 1;
+        if (mixerGroup != Mixer.None)
         {
-            a.PlayOneShot(c);
+            aSource.outputAudioMixerGroup = mixerGroups[(int)mixerGroup];
+            //aSource.volume *= mixerGroups[(int)mixerGroup];
         }
+        aSource.volume *= volume;
+        aSource.spatialBlend = 0;
+        if (is3D)
+        {
+            tempGO.transform.position = position;
+            aSource.spatialBlend = 1;
+        }
+        aSource.playOnAwake = false;
+        aSource.loop = loop;
+        aSource.Play();
+        if (!loop)
+        {
+            yield return new WaitForSeconds(c.length);
+            Destroy(tempGO);
+        }
+    }
+    public enum Mixer
+    {
+        None = -1,
+        UI = 0,
+        Ambience = 1,
+        Music = 2,
+        SFX = 3,
+        Dialogue = 4,
     }
 }

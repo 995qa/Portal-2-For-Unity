@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 public class MainMenuManger : MonoBehaviour 
 {
@@ -9,102 +8,119 @@ public class MainMenuManger : MonoBehaviour
     [SerializeField] private AudioClip noClip;
     [SerializeField] private AudioClip pressClip;
     [SerializeField] private AudioClip[] music;
-    [SerializeField] private AudioSource buttonAudioSource;
-    [SerializeField] private AudioSource musicAudioSource;
-    [SerializeField] private Text text;
-    [SerializeField] private float showNotification;
-    private bool N3DSMode;
+    [SerializeField] private int touchScreenTick;
+    [SerializeField] private string[] items;
     private int button;
 	private bool update;
-    private float timer = -1;
+    private float position;
+    private float prev;
+    private bool tick;
+    private bool prevPress;
+    private bool press;
     void Start()
     {
-        N3DSMode = UnityEngine.N3DS.Application.isRunningOnSnake;
-        musicAudioSource.PlayOneShot(music[Random.Range(0, music.Length)]);
+        AudioManager.Instance.Play(transform, music[Random.Range(0, music.Length)]);
     }
 	void Update () 
 	{
-        if (timer != -1)
-        {
-            timer += Time.deltaTime;
-        }
-        if (timer>showNotification)
-        {
-            timer = -1;
-            text.text = "";
-        }
         update = false;
+#if !UNITY_EDITOR
+        if (Input.touchCount!=0&&!prevPress)
+        {
+            tick = false;
+        }
+        if (Input.touchCount==0&&prevPress)
+        {
+            if (!tick)
+            {
+                press = true;
+            }
+        }
+        if (Input.touchCount!=0)
+        {
+            prev = position;
+            position += Input.GetTouch(0).deltaPosition.y;
+            update = ((int)(prev / touchScreenTick) != (int)(position / touchScreenTick));
+        }
+#else
+        if (Input.GetMouseButton(0) && !prevPress)
+        {
+            tick = false;
+        }
+        if (!Input.GetMouseButton(0) && prevPress)
+        {
+            if (!tick)
+            {
+                press = true;
+            }
+        }
+        if (Input.GetMouseButton(0))
+        {
+            prev = position;
+            position += Input.GetAxis("Mouse Y") * 3;
+            update = ((int)(prev / touchScreenTick) != (int)(position / touchScreenTick));
+        }
+#endif
         if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.DownArrow))
 
         {
 			button++;
-			if (button == menuImages.Length)
-			{
-				button = 0;
-			}
 			update = true;
 		}
 		else if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             button--;
-            if (button == -1)
-            {
-                button = menuImages.Length-1;
-            }
             update = true;
         }
-		if (Input.GetKeyDown(KeyCode.A))
+        int selection = (int)(position / touchScreenTick) + button;
+        while (selection < 0)
+        {
+            selection += menuImages.Length;
+        }
+        while (selection > menuImages.Length-1)
+        {
+            selection -= menuImages.Length;
+        }
+        if (Input.GetKeyDown(KeyCode.A)||press)
 		{
-            if (button == 0)
+            press = false;
+            if (selection == 0)
 			{
-                StartCoroutine(PlayAndDestroy(pressClip, buttonAudioSource.volume));
+                AudioManager.Instance.Play(transform, pressClip);
                 Bootloader.Instance.NextScene();
-            }
-			else if (button == 3)
-			{
-                StartCoroutine(PlayAndDestroy(pressClip, buttonAudioSource.volume));
-                Settings();
             }
             else
 			{
-                StartCoroutine(PlayAndDestroy(pressClip, buttonAudioSource.volume));
+                AudioManager.Instance.Play(transform, noClip);
             }
         }
 		if (update)
 		{
-            StartCoroutine(PlayAndDestroy(buttonClip, buttonAudioSource.volume));
-            image.texture = menuImages[button];
+            tick = true;
+            AudioManager.Instance.Play(transform, buttonClip);
+            image.texture = menuImages[selection];
+            MainMenuBottomScreenManager.Instance.main.text = items[selection];
+            if (selection == 0)
+            {
+                MainMenuBottomScreenManager.Instance.previous.text = items[items.Length-1];
+            }
+            else
+            {
+                MainMenuBottomScreenManager.Instance.previous.text = items[selection - 1];
+            }
+            if (selection == items.Length - 1)
+            {
+                MainMenuBottomScreenManager.Instance.next.text = items[0];
+            }
+            else
+            {
+                MainMenuBottomScreenManager.Instance.next.text = items[selection + 1];
+            }
         }
-    }
-    public IEnumerator PlayAndDestroy(AudioClip clip, float volume = 1f)
-    {
-        if (clip == null)
-        {
-            Debug.LogWarning("AudioRitual: Null clip passed to coroutine.");
-            yield break;
-        }
-        GameObject tempGO = new GameObject("TempAudioSource");
-        AudioSource aSource = tempGO.AddComponent<AudioSource>();
-        aSource.clip = clip;
-        aSource.volume = volume;
-        aSource.playOnAwake = false;
-        aSource.loop = false;
-        aSource.Play();
-        yield return new WaitForSeconds(clip.length);
-        Destroy(tempGO);
-    }
-    void Settings()
-    {
-        N3DSMode = !N3DSMode;
-        if (N3DSMode)
-        {
-            text.text = "Now in New 3DS Mode!";
-        }
-        else
-        {
-            text.text = "Now in Old 3DS Mode!";
-        }
-        Bootloader.Instance.N3DSMode = N3DSMode;
-        timer = 0;
+#if !UNITY_EDITOR
+        prevPress = Input.touchCount>0;
+#else
+        prevPress = Input.GetMouseButton(0);
+#endif
     }
 }

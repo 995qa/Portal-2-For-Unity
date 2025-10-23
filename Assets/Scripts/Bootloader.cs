@@ -6,7 +6,9 @@ public class Bootloader : MonoBehaviour
 {
     [SerializeField] private string[] scenes;
     [SerializeField] private string[] gameScenes;
-    [SerializeField] private Sprite[] loadingScreens;
+    [SerializeField] private string mainMenu;
+    [SerializeField] private Sprite[] gameLoadingScreens;
+    [SerializeField] private Sprite[] menuLoadingScreens;
     public bool N3DSMode;
     private int state;
     public static Bootloader Instance
@@ -49,7 +51,13 @@ public class Bootloader : MonoBehaviour
             {
                 state++;
             }
-            TransitionManager.Instance.Scene(scenes[state], loadingScreens[Random.Range(0,loadingScreens.Length)]);
+            Sprite image = gameLoadingScreens[Random.Range(0, gameLoadingScreens.Length)];
+            TransitionManager.Instance.Scene(scenes[state], image, true, image);
+        }
+        else if (mainMenu == scenes[state])
+        {
+            Sprite image = menuLoadingScreens[Random.Range(0, menuLoadingScreens.Length)];
+            TransitionManager.Instance.Scene(scenes[state], image, false, image);
         }
         else
         {

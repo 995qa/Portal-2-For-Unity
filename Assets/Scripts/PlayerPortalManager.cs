@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerPortalManager : MonoBehaviour 
 {
@@ -55,6 +54,10 @@ public class PlayerPortalManager : MonoBehaviour
         {
             portals[color].transform.position = hit.point+hit.normal*offset;
             portals[color].transform.rotation = Quaternion.LookRotation(hit.normal);
+            if (portalScripts[color].boundCollider != null)
+            {
+                portalScripts[color].boundCollider.isTrigger = true;
+            }
             portalScripts[color].SetBoundCollider((BoxCollider)hit.collider);
             portalScripts[color].placed = true;
             return true;
