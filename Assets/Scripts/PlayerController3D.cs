@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class PlayerController3D : MonoBehaviour 
 {
     [SerializeField] private Transform cam;
@@ -9,6 +8,7 @@ public class PlayerController3D : MonoBehaviour
     [SerializeField] private float raycastDistance;
     [SerializeField] private float jumpForce;
     [SerializeField] private float friction;
+    public bool drunk;
     private Rigidbody rb;
     private Transform player;
     private float angle;
@@ -30,6 +30,7 @@ public class PlayerController3D : MonoBehaviour
         }
         player = transform;
         rb = GetComponent<Rigidbody>();
+        rb.centerOfMass = new Vector3(0, -5, 0);
     }
 	void Update () 
 	{
@@ -127,9 +128,19 @@ public class PlayerController3D : MonoBehaviour
             camAngle -= lookSpeed / 5;
         }
 #endif
-        rb.freezeRotation = false;
+        rb.constraints = RigidbodyConstraints.None;
         player.rotation = Quaternion.Euler(player.rotation.eulerAngles.x, player.rotation.eulerAngles.y + playerAngle, player.rotation.eulerAngles.z);
-        rb.freezeRotation = true;
+        if (drunk)
+        {
+            rb.centerOfMass = new Vector3(0, -1, 0);
+            rb.constraints = RigidbodyConstraints.FreezeRotationY;
+        }
+        else
+        {
+            rb.transform.rotation = Quaternion.Euler(0, rb.transform.rotation.eulerAngles.y, 0);
+            rb.centerOfMass = new Vector3(0, 0, 0);
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
         angle = cam.rotation.eulerAngles.x;
         if (angle > 180)
         {
@@ -187,15 +198,14 @@ public class PlayerController3D : MonoBehaviour
             rb.velocity = new Vector3(horVel.x, rb.velocity.y, horVel.y);
         }
         RaycastHit hit;
-        Debug.Log(grounded);
-        if ((sidewaysForce == 0 && forwardForce == 0) && grounded)
+        if ((sidewaysForce == 0 && forwardForce == 0) && !grounded)
         {
             rb.velocity = new Vector3(rb.velocity.x / (friction * Time.deltaTime), rb.velocity.y, rb.velocity.z / (friction * Time.deltaTime));
         }
         grounded = false;
         if (Physics.SphereCast(transform.position, gameObject.GetComponentInChildren<CapsuleCollider>().radius-0.05f, new Vector3(0,-1,0), out hit, raycastDistance))
         {
-            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Portal Walls"))
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Portal Walls"))
             {
                 grounded = true;
             }
