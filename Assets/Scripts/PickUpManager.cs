@@ -31,15 +31,18 @@ public class PickUpManager : MonoBehaviour
 	bool PickUpObject()
 	{
 		RaycastHit hit;
-		if(Physics.Raycast(transform.position,transform.forward,out hit, 3, physicsProps))
+		if(Physics.Raycast(transform.position,transform.forward,out hit, 3))
 		{
             heldProp = hit.rigidbody;
-            heldProp.useGravity = false;
-			heldProp.gameObject.layer = LayerMask.NameToLayer("Held Physics Prop");
-			pickupCamRot = transform.root.eulerAngles;
-			pickupPropRot = heldProp.transform.rotation.eulerAngles;
-			return true;
-		}
+			if (heldProp != null)
+			{
+                heldProp.useGravity = false;
+                heldProp.gameObject.layer = LayerMask.NameToLayer("Held Physics Prop");
+                pickupCamRot = transform.root.eulerAngles;
+                pickupPropRot = heldProp.transform.rotation.eulerAngles;
+                return true;
+            }
+        }
 		return false;
 	}
 	void FixedUpdate()

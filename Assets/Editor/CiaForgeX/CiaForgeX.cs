@@ -262,7 +262,6 @@ public class PostBuildHook
                 if (memoryTypeIndex2 != -1) rsfLines.Insert(memoryTypeIndex2 + 2, extModeLine);
             }
         }
-
         ReplaceConfigValue(rsfLines, "DisableDebug                  ", "false");
         ReplaceConfigValue(rsfLines, "EnableForceDebug              ", "false");
         ReplaceConfigValue(rsfLines, "CanWriteSharedPage            ", "true");
@@ -304,7 +303,7 @@ public class PostBuildHook
         File.Copy(tempPath + "game.cia", outputFile, true);
 
         EditorUtility.DisplayProgressBar("CiaForgeX", "Cleaning up", 1f);
-        Directory.Delete(tempPath, true);
+//        Directory.Delete(tempPath, true);
 
         EditorUtility.ClearProgressBar();
 

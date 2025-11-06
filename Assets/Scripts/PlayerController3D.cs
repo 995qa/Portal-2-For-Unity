@@ -112,7 +112,7 @@ public class PlayerController3D : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            playerAngle += lookSpeed/5;
+            playerAngle += lookSpeed / 5;
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -148,24 +148,24 @@ public class PlayerController3D : MonoBehaviour
             cam.rotation = Quaternion.Euler(cam.rotation.eulerAngles.x - camAngle, cam.rotation.eulerAngles.y, cam.rotation.eulerAngles.z);
         }
         Vector2 horVel = new Vector2(rb.velocity.x, rb.velocity.z);
-        float forwardForce = UnityEngine.N3DS.GamePad.CirclePad.y;
-        float sidewaysForce = UnityEngine.N3DS.GamePad.CirclePad.x;
+        float forwardForce = UnityEngine.N3DS.GamePad.CirclePad.y * Time.deltaTime;
+        float sidewaysForce = UnityEngine.N3DS.GamePad.CirclePad.x * Time.deltaTime;
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.W))
         {
-            forwardForce += 1;
+            forwardForce += 1 * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            forwardForce -= 1;
+            forwardForce -= 1 * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            sidewaysForce += 1;
+            sidewaysForce += 1 * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            sidewaysForce -= 1;
+            sidewaysForce -= 1 * Time.deltaTime;
         }
 #endif
         if (forwardForce!=0 || sidewaysForce != 0)
@@ -187,17 +187,21 @@ public class PlayerController3D : MonoBehaviour
             rb.velocity = new Vector3(horVel.x, rb.velocity.y, horVel.y);
         }
         RaycastHit hit;
+        Debug.Log(grounded);
         if ((sidewaysForce == 0 && forwardForce == 0) && grounded)
         {
-            rb.velocity = new Vector3(rb.velocity.x * (1 / friction), rb.velocity.y, rb.velocity.z * (1 / friction));
+            rb.velocity = new Vector3(rb.velocity.x / (friction * Time.deltaTime), rb.velocity.y, rb.velocity.z / (friction * Time.deltaTime));
         }
         grounded = false;
-        if (Physics.SphereCast(transform.position, gameObject.GetComponent<CapsuleCollider>().radius-0.05f, new Vector3(0,-1,0), out hit, raycastDistance))
+        if (Physics.SphereCast(transform.position, gameObject.GetComponentInChildren<CapsuleCollider>().radius-0.05f, new Vector3(0,-1,0), out hit, raycastDistance))
         {
-            grounded = true;
-            if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.A) || Input.GetKeyDown(KeyCode.Space)) 
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Portal Walls"))
             {
-                rb.AddForce(new Vector3(0,jumpForce,0),ForceMode.Impulse);
+                grounded = true;
+            }
+            if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.A) || Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             }
         }
     }

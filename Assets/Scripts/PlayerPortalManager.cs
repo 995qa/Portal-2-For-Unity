@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Reflection.Emit;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerPortalManager : MonoBehaviour 
 {
     [SerializeField] private LayerMask portalableMask;
+    [SerializeField] private LayerMask[] raycastMasks;
     [SerializeField] private Transform cam;
     [SerializeField] private GameObject[] portals;
     [SerializeField] private float offset;
@@ -50,17 +53,18 @@ public class PlayerPortalManager : MonoBehaviour
     bool ShootPortal(int color)
     {
         RaycastHit hit;
-        if (Physics.Raycast(cam.position, cam.forward, out hit, 200, portalableMask))
+        if (Physics.Raycast(cam.position, cam.forward, out hit, 200, raycastMasks[color]))
         {
-            portals[color].transform.position = hit.point+hit.normal*offset;
-            portals[color].transform.rotation = Quaternion.LookRotation(hit.normal);
-            if (portalScripts[color].boundCollider != null)
+            Debug.Log(LayerMask.LayerToName(hit.transform.gameObject.layer));
+            bool portalable = false;
+            portalable = (portalableMask.value & (1 << hit.transform.gameObject.layer)) != 0;
+            if (portalable)
             {
-                portalScripts[color].boundCollider.isTrigger = true;
+                portals[color].transform.position = hit.point + hit.normal * offset;
+                portals[color].transform.rotation = Quaternion.LookRotation(hit.normal);
+                portalScripts[color].placed = true;
+                return true;
             }
-            portalScripts[color].SetBoundCollider((BoxCollider)hit.collider);
-            portalScripts[color].placed = true;
-            return true;
         }
         return false;
     }
