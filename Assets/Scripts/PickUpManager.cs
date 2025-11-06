@@ -9,6 +9,7 @@ public class PickUpManager : MonoBehaviour
     private Vector3 pickupPropRot;
     void Update () 
 	{
+		transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, 0, 0);
 #if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.R))
 #else

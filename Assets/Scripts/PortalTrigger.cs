@@ -62,7 +62,6 @@ public class PortalTrigger : MonoBehaviour
                     {
                         if (colls.Contains(portalableObjects[i]))
                         {
-                            Debug.Log("Switch");
                             Teleport(portalableObjects[i]);
                         }
                     }
@@ -117,12 +116,9 @@ public class PortalTrigger : MonoBehaviour
 
             if (otherPortal.transform.rotation.eulerAngles.x != 0 || this.transform.rotation.eulerAngles.x != 0)
             {
-                go.transform.rotation = Quaternion.Euler(new Vector3(go.transform.rotation.eulerAngles.x + delta.eulerAngles.x, go.transform.rotation.eulerAngles.y + delta.eulerAngles.y + 180, go.transform.rotation.eulerAngles.z + delta.eulerAngles.z));
+                delta = Quaternion.Euler(delta.eulerAngles.x, delta.eulerAngles.y, delta.eulerAngles.z);
             }
-            else
-            {
-                go.transform.rotation = Quaternion.Euler(new Vector3(go.transform.rotation.eulerAngles.x + delta.eulerAngles.x, go.transform.rotation.eulerAngles.y + delta.eulerAngles.y, go.transform.rotation.eulerAngles.z + delta.eulerAngles.z));
-            }
+            go.transform.rotation = Quaternion.Euler(new Vector3(go.transform.rotation.eulerAngles.x + delta.eulerAngles.x, go.transform.rotation.eulerAngles.y + delta.eulerAngles.y, go.transform.rotation.eulerAngles.z + delta.eulerAngles.z));
             go.GetComponent<Rigidbody>().velocity = delta * go.GetComponent<Rigidbody>().velocity;
             vel = go.GetComponent<Rigidbody>().velocity;
         }

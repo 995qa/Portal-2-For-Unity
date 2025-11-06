@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PortalableObject : MonoBehaviour
 {
@@ -13,18 +12,18 @@ public class PortalableObject : MonoBehaviour
             a[i].portalableObjects.Add(gameObject);
         }
     }
-    void Update()
-    {
-        if (gameObject.name == "Player")
-        {
-            Vector3 targetEuler = new Vector3();
-            //targetEuler.x = Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.x, 0f, speed * Time.deltaTime);
-            targetEuler.x = 0;
-            targetEuler.y = transform.rotation.eulerAngles.y;
-            //targetEuler.z = Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.z, 0f, speed * Time.deltaTime);
-            targetEuler.z = 0;
+    //void Update()
+    //{
+    //    if (gameObject.name == "Player")
+    //    {
+    //        Vector3 targetEuler = new Vector3();
+    //        //targetEuler.x = Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.x, 0f, speed * Time.deltaTime);
+    //        targetEuler.x = 0;
+    //        targetEuler.y = transform.rotation.eulerAngles.y;
+    //        //targetEuler.z = Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.z, 0f, speed * Time.deltaTime);
+    //        targetEuler.z = 0;
 
-            transform.rotation = Quaternion.Euler(targetEuler);
-        }
-    }
+    //        transform.rotation = Quaternion.Euler(targetEuler);
+    //    }
+    //}
 }
