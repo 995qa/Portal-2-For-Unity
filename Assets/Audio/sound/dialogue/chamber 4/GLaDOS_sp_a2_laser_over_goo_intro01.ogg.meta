@@ -1,6 +1,21 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
+<<<<<<<< Updated upstream:Assets/Audio/sound/dialogue/chamber 4/GLaDOS_sp_a2_laser_over_goo_intro01.ogg.meta
 guid: c8efa31e44c45094b833ca5fa966781f
 timeCreated: 1762467590
+========
+guid: 687df3a519fc1ab43b771124b9cac760
+timeCreated: 1762796359
+>>>>>>>> Stashed changes:Assets/Audio/sound/dialogue/chamber 4/PORTal243DS.ogg.meta
+=======
+<<<<<<<< Updated upstream:Assets/Audio/sound/dialogue/chamber 4/GLaDOS_sp_laser_over_goo_completion01.ogg.meta
+guid: 1fa610b7600fe8747acf904810dd6ec2
+timeCreated: 1762467584
+========
+guid: 302ee31af2411204b9707b0a6bf11460
+timeCreated: 1762796344
+>>>>>>>> Stashed changes:Assets/Audio/sound/dialogue/chamber 4/GLaDOS_sp_a2_laser_over_goo_intro01.ogg.meta
+>>>>>>> Stashed changes
 licenseType: Free
 AudioImporter:
   serializedVersion: 6

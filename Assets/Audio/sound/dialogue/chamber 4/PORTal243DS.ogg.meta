@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream
-guid: cb28169676123e6469e9e1e09f4a522c
-timeCreated: 1762467596
-=======
-guid: ac95b946c6e43854fbd2a53fce878a22
-timeCreated: 1762796371
->>>>>>> Stashed changes
+<<<<<<<< Updated upstream:Assets/Audio/sound/dialogue/chamber 4/GLaDOS_sp_a2_laser_over_goo_intro01.ogg.meta
+guid: c8efa31e44c45094b833ca5fa966781f
+timeCreated: 1762467590
+========
+guid: 687df3a519fc1ab43b771124b9cac760
+timeCreated: 1762796359
+>>>>>>>> Stashed changes:Assets/Audio/sound/dialogue/chamber 4/PORTal243DS.ogg.meta
 licenseType: Free
 AudioImporter:
   serializedVersion: 6

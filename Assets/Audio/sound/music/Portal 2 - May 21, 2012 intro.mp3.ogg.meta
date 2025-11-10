@@ -1,6 +1,16 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
+<<<<<<<< Updated upstream:Assets/Audio/sound/music/Portal 2 - May 21, 2012 intro.mp3.ogg.meta
 guid: 78bf4ef2b3ce991409fb571753f79706
 timeCreated: 1762467590
+========
+guid: 29ce03d6e3bc0c34ebefcfc41cc52fd9
+timeCreated: 1762796343
+>>>>>>>> Stashed changes:Assets/Audio/sound/dialogue/chamber 4/GLaDOS_sp_laser_over_goo_entry01.ogg.meta
+=======
+guid: 44604096ff60bb24a906c12f09768d6a
+timeCreated: 1762796345
+>>>>>>> Stashed changes
 licenseType: Free
 AudioImporter:
   serializedVersion: 6
