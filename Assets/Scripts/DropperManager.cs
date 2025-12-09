@@ -9,6 +9,7 @@ public class DropperManager : MonoBehaviour
 	[SerializeField] private ButtonManager button;
     [SerializeField] private Transform[] propParents;
     [SerializeField] private Vector3 spawnOffset;
+    [SerializeField] private bool onStart;
 	private bool clear;
     private void Start()
     {
@@ -25,22 +26,34 @@ public class DropperManager : MonoBehaviour
         }
         props = gos.ToArray();
         propParents = parents.ToArray();
+        if (onStart)
+        {
+            int index = UnityEngine.Random.Range(0, props.Length);
+            GameObject go = Instantiate(props[index], transform.position + spawnOffset, Quaternion.identity);
+            go.transform.parent = propParents[index];
+        }
     }
 	void Update () 
 	{
 		if (clear)
 		{
 			clear = false;
-			button.isPressed = false;
-		}
-		if (button.isPressed)
-		{
-			clear = true;
-            int index = UnityEngine.Random.Range(0, props.Length);
-            GameObject go = Instantiate(props[index], transform.position + spawnOffset, Quaternion.identity);
-            go.transform.parent = propParents[index];
-		}
-	}
+            if (button != null)
+            {
+                button.isPressed = false;
+            }
+        }
+        if (button != null)
+        {
+            if (button.isPressed)
+            {
+                clear = true;
+                int index = UnityEngine.Random.Range(0, props.Length);
+                GameObject go = Instantiate(props[index], transform.position + spawnOffset, Quaternion.identity);
+                go.transform.parent = propParents[index];
+            }
+        }
+    }
     private static int GCD(int a, int b)
     {
         while (b != 0)

@@ -13,6 +13,8 @@ public class FloorButtonManager : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private MeshRenderer mr;
     [SerializeField] private Texture2D[] texes;
+    [SerializeField] private AudioClip[] downUp;
+    [SerializeField] private float vol;
     private Transform child;
     private bool down;
     private Vector3 delta;
@@ -27,10 +29,12 @@ public class FloorButtonManager : MonoBehaviour
     {
         down = true;
         isPressed = true;
+        AudioManager.Instance.Play(transform, downUp[0], AudioManager.Mixer.SFX, vol, true, transform.position, false);
     }
     public void Release()
     {
         isPressed = false;
+        AudioManager.Instance.Play(transform, downUp[1], AudioManager.Mixer.SFX, vol, true, transform.position, false);
     }
     void Update()
     {

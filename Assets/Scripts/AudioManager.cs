@@ -7,16 +7,17 @@ using UnityEngine.SceneManagement;
 public class AudioManager : MonoBehaviour 
 {
     [SerializeField] private AudioMixerGroup[] mixerGroups;
-    private List<GameObject> sources;
+    private List<AudioSource> sources;
     private List<Transform> parents;
     [SerializeField] private int pool;
+    private AudioSource source;
     public static AudioManager Instance
     {
         get; private set;
     }
     private void Awake()
     {
-        sources = new List<GameObject>();
+        sources = new List<AudioSource>();
         parents = new List<Transform>();
         if (Instance != null)
         {
@@ -31,10 +32,9 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < pool; i++)
         {
             GameObject go = new GameObject("Pooled Audio Source");
-            go.AddComponent<AudioSource>();
+            AudioSource s = go.AddComponent<AudioSource>();
             go.transform.parent = transform;
-            go.SetActive(false);
-            sources.Add(go);
+            sources.Add(s);
             parents.Add(transform);
         }
     }
@@ -49,21 +49,22 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
-    public void Play(Transform t,AudioClip c, Mixer mixerGroup = Mixer.None, float volume = 1, bool is3D = false, Vector3 position = new Vector3(), bool loop = false)
+    public AudioSource Play(Transform t,AudioClip c, Mixer mixerGroup = Mixer.None, float volume = 1, bool is3D = false, Vector3 position = new Vector3(), bool loop = false)
     {
         StartCoroutine(PlayAndDestroy(t, c, mixerGroup, volume, is3D, position, loop));
+        return source;
     }
     public IEnumerator PlayAndDestroy(Transform t, AudioClip c, Mixer mixerGroup, float volume, bool is3D, Vector3 position, bool loop)
     {
         if (c == null)
         {
-            Debug.LogWarning("AudioRitual: Null clip passed to coroutine.");
+            Debug.LogWarning("Null Audio Clip.");
             yield break;
         }
         AudioSource aSource = GetSource(t);
+        source = aSource;
         if (aSource != null)
         {
-            aSource.gameObject.SetActive(true);
             aSource.clip = c;
             aSource.volume = 1;
             if (mixerGroup != Mixer.None)
@@ -81,23 +82,18 @@ public class AudioManager : MonoBehaviour
             aSource.playOnAwake = false;
             aSource.loop = loop;
             aSource.Play();
-            if (!loop)
-            {
-                yield return new WaitForSeconds(c.length);
-                aSource.gameObject.SetActive(false);
-            }
         }
     }
     private AudioSource GetSource(Transform t)
     {
-        GameObject s;
+        AudioSource s;
         for (int i = 0; i < sources.Count; i++)
         {
             s = sources[i];
-            if (!s.activeInHierarchy)
+            if (!s.isPlaying)
             {
                 parents[i] = t;
-                return s.GetComponent<AudioSource>();
+                return s;
             }
         }
         return null;

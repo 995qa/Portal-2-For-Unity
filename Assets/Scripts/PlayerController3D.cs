@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class PlayerController3D : MonoBehaviour 
 {
@@ -9,10 +12,18 @@ public class PlayerController3D : MonoBehaviour
     [SerializeField] private float raycastDistance;
     [SerializeField] private float jumpForce;
     [SerializeField] private float friction;
+    [SerializeField] private AudioClip[] wAudioClips;
+    [SerializeField] private AudioClip[] bAudioClips;
+    [SerializeField] private float vol;
     private Rigidbody rb;
     private Transform player;
     private float angle;
     private bool grounded;
+    private Material currOn;
+    private bool playing;
+    [SerializeField] private float dur;
+    private bool move;
+    private List<AudioClip>[] audioClips;
     public static PlayerController3D Instance
     {
         get; private set;
@@ -30,8 +41,11 @@ public class PlayerController3D : MonoBehaviour
         }
         player = transform;
         rb = GetComponent<Rigidbody>();
+        audioClips = new List<AudioClip>[2];
+        audioClips[0] = wAudioClips.ToList();
+        audioClips[1] = bAudioClips.ToList();
     }
-	void Update () 
+    void Update () 
 	{
 #if UNITY_EDITOR
         angle = cam.rotation.eulerAngles.x;
@@ -150,22 +164,31 @@ public class PlayerController3D : MonoBehaviour
         Vector2 horVel = new Vector2(rb.velocity.x, rb.velocity.z);
         float forwardForce = UnityEngine.N3DS.GamePad.CirclePad.y * Time.deltaTime;
         float sidewaysForce = UnityEngine.N3DS.GamePad.CirclePad.x * Time.deltaTime;
+        move = false;
+        if (UnityEngine.N3DS.GamePad.CirclePad.magnitude > 0)
+        {
+            move = true;
+        }
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.W))
         {
             forwardForce += 1 * Time.deltaTime;
+            move = true;
         }
         if (Input.GetKey(KeyCode.S))
         {
             forwardForce -= 1 * Time.deltaTime;
+            move = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
             sidewaysForce += 1 * Time.deltaTime;
+            move = true;
         }
         if (Input.GetKey(KeyCode.A))
         {
             sidewaysForce -= 1 * Time.deltaTime;
+            move = true;
         }
 #endif
         if (forwardForce!=0 || sidewaysForce != 0)
@@ -194,14 +217,51 @@ public class PlayerController3D : MonoBehaviour
         grounded = false;
         if (Physics.SphereCast(transform.position, gameObject.GetComponentInChildren<CapsuleCollider>().radius-0.05f, new Vector3(0,-1,0), out hit, raycastDistance))
         {
+            if (hit.transform.parent != null)
+            {
+                if (hit.transform.parent.gameObject.name.Contains("lack"))
+                {
+                    currOn = Material.Black;
+                }
+                else if (hit.transform.parent.gameObject.name.Contains("hite"))
+                {
+                    currOn = Material.Black;
+                }
+                else
+                {
+                    currOn = Material.None;
+                }
+            }
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Portal Walls"))
             {
                 grounded = true;
             }
             if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.A) || Input.GetKeyDown(KeyCode.Space))
             {
+                AudioManager.Instance.Play(transform, audioClips[(int)currOn][audioClips[(int)currOn].Count - 1], AudioManager.Mixer.SFX, vol * 2, true, transform.position, false);
                 rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             }
         }
+        if (grounded && move && !playing)
+        {
+            if (currOn != Material.None)
+            {
+                playing = true;
+                AudioManager.Instance.Play(transform, audioClips[(int)currOn][Random.Range(0, audioClips[(int)currOn].Count - 1)], AudioManager.Mixer.SFX, vol, true, transform.position, false);
+                StartCoroutine(Wait());
+            }
+        }
+    }
+
+    private IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(dur);
+        playing = false;
+    }
+    public enum Material
+    {
+        None,
+        Black,
+        White,
     }
 }

@@ -88,7 +88,7 @@ public class MainMenuManger : MonoBehaviour
             press = false;
             if (selection == 0)
 			{
-                AudioManager.Instance.Play(transform, pressClip);
+                AudioManager.Instance.Play(transform, pressClip, AudioManager.Mixer.UI, 1, false, transform.position, false);
                 string path = Path.Combine(Application.persistentDataPath, "CHAMBER");
                 int index = 0;
                 if (File.Exists(path))
@@ -99,13 +99,13 @@ public class MainMenuManger : MonoBehaviour
             }
             else
 			{
-                AudioManager.Instance.Play(transform, noClip);
+                AudioManager.Instance.Play(transform, noClip, AudioManager.Mixer.UI, 1, false, transform.position, false);
             }
         }
 		if (update)
 		{
             tick = true;
-            AudioManager.Instance.Play(transform, buttonClip, AudioManager.Mixer.Music, 1.0f, false, new Vector3(), true);
+            AudioManager.Instance.Play(transform, buttonClip, AudioManager.Mixer.UI, 1, false, transform.position, false);
             image.texture = menuImages[selection];
             MainMenuBottomScreenManager.Instance.main.text = items[selection];
             if (selection == 0)

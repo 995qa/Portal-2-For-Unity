@@ -6,6 +6,8 @@ public class ButtonManager : MonoBehaviour
     [HideInInspector] public bool isDown;
     [SerializeField] private Vector3 pressDistance;
 	[SerializeField] private float speed;
+	[SerializeField] private AudioClip press;
+	[SerializeField] private float vol;
 	private Transform child;
 	private bool down;
 	private Vector3 delta;
@@ -18,6 +20,7 @@ public class ButtonManager : MonoBehaviour
     }
     public void Press()
 	{
+		AudioManager.Instance.Play(transform, press, AudioManager.Mixer.SFX, vol, true, transform.position, false);
 		down = true;
 		isPressed = true;
 	}

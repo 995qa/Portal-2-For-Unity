@@ -5,6 +5,9 @@ public class PortalTrigger : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform otherPortal;
     [SerializeField] private BoxCollider portalBoxCollider;
+    [SerializeField] private AudioClip[] enter;
+    [SerializeField] private AudioClip[] exit;
+    [SerializeField] private float vol;
     public List<GameObject> portalableObjects;
     public bool placed;
     private Vector3 oldPos;
@@ -12,8 +15,9 @@ public class PortalTrigger : MonoBehaviour
     public List<bool> prev;
     public List<GameObject> colls;
     Vector3 vel;
-    void Awake()
+    void Start()
     {
+        playerTransform = Camera.main.transform.parent;
         oldPos = playerTransform.position;
         colls = new List<GameObject>();
     }
@@ -73,6 +77,7 @@ public class PortalTrigger : MonoBehaviour
     {
         if (otherPortal.gameObject.GetComponent<PortalTrigger>().placed)
         {
+            AudioManager.Instance.Play(transform, enter[Random.Range(0, enter.Length)], AudioManager.Mixer.SFX, vol, true, transform.position, false);
             col.gameObject.layer = LayerMask.NameToLayer("Portal Collider");
             GameObject go = col.gameObject;
             if (go.GetComponent<Parent>()  != null)
@@ -84,6 +89,10 @@ public class PortalTrigger : MonoBehaviour
     }
     void OnTriggerExit(Collider col)
     {
+        if (otherPortal.gameObject.GetComponent<PortalTrigger>().placed)
+        {
+            AudioManager.Instance.Play(transform, exit[Random.Range(0, exit.Length)], AudioManager.Mixer.SFX, vol, true, transform.position, false);
+        }
         if (col.gameObject.name == "Player" || col.gameObject.name == "Portal Trigger")
         {
             col.gameObject.layer = LayerMask.NameToLayer("Player");
@@ -99,18 +108,13 @@ public class PortalTrigger : MonoBehaviour
         }
         colls.Remove(go);
     }
-    void Teleport(GameObject go)
+    public void Teleport(GameObject go)
     {
         if (otherPortal.gameObject.GetComponent<PortalTrigger>().placed)
         {
-            if (name == "Blue Portal")
-            {
-                go.transform.position = otherPortal.position + (otherPortal.forward * 0.1f * 2.5f);
-            }
-            else
-            {
-                go.transform.position = otherPortal.position + (otherPortal.forward * 0.1f * 2.5f);
-            }
+            go.transform.position -= transform.position;
+            go.transform.position = -go.transform.position;
+            go.transform.position += otherPortal.position + (otherPortal.forward * 0.1f * 2.5f);
 
             Quaternion delta = Quaternion.FromToRotation(-this.transform.forward, otherPortal.transform.forward);
 
@@ -122,8 +126,11 @@ public class PortalTrigger : MonoBehaviour
             {
                 go.transform.rotation = Quaternion.Euler(new Vector3(go.transform.rotation.eulerAngles.x + delta.eulerAngles.x, go.transform.rotation.eulerAngles.y + delta.eulerAngles.y, go.transform.rotation.eulerAngles.z + delta.eulerAngles.z));
             }
-            go.GetComponent<Rigidbody>().velocity = delta * go.GetComponent<Rigidbody>().velocity;
-            vel = go.GetComponent<Rigidbody>().velocity;
+            if (go.GetComponent<Rigidbody>() != null)
+            {
+                go.GetComponent<Rigidbody>().velocity = delta * go.GetComponent<Rigidbody>().velocity;
+                vel = go.GetComponent<Rigidbody>().velocity;
+            }
         }
     }
 }
