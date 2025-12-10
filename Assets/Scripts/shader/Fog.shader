@@ -13,13 +13,13 @@
         Pass
         {
             ZWrite Off
-            Cull Front
+            Cull Off
             Lighting Off
             Blend SrcAlpha OneMinusSrcAlpha
             SetTexture [_DummyTex]
             {
                 constantColor [_Color]
-                combine constant
+                combine texture*constant
             }
         }
     }

@@ -14,6 +14,7 @@
         }
 
         Lighting Off
+        ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
         Pass 
         {
