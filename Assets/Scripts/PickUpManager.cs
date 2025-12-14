@@ -17,11 +17,7 @@ public class PickUpManager : MonoBehaviour
     }
     void Update () 
 	{
-#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.R))
-#else
-		if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.X))
-#endif
         {
             if (!hold)
 			{

@@ -12,11 +12,7 @@ public class PlayerPortalManager : MonoBehaviour
     [SerializeField] private PortalTrigger[] portalScripts;
     void Update () 
 	{
-#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.E))
-#else
-        if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.R))
-#endif
         {
             if (ShootPortal(1))
             {
@@ -31,11 +27,7 @@ public class PlayerPortalManager : MonoBehaviour
                 CrosshairManager.Instance.update = true;
             }
         }
-#if UNITY_EDITOR
         else if (Input.GetKeyDown(KeyCode.Q))
-#else
-        else if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.L))
-#endif
         {
             if (ShootPortal(0))
             {

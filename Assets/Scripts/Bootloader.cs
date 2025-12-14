@@ -21,11 +21,7 @@ public class Bootloader : MonoBehaviour
     }
     private void Update()
     {
-#if !UNITY_EDITOR
-        if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.ZL) && UnityEngine.N3DS.GamePad.GetButtonHold(N3dsButton.ZR))
-#else
 		if (Input.GetKeyDown(KeyCode.F1))
-#endif
         {
             SceneManager.LoadScene(scenes[state]);
             state++;
@@ -44,7 +40,6 @@ public class Bootloader : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(gameObject);
-        N3DSMode = UnityEngine.N3DS.Application.isRunningOnSnake;
     }
     public void NextScene()
     {

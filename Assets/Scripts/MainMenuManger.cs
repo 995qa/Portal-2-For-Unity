@@ -26,7 +26,6 @@ public class MainMenuManger : MonoBehaviour
 	void Update () 
 	{
         update = false;
-#if !UNITY_EDITOR
         if (Input.touchCount!=0&&!prevPress)
         {
             tick = false;
@@ -44,25 +43,6 @@ public class MainMenuManger : MonoBehaviour
             position += Input.GetTouch(0).deltaPosition.y;
             update = ((int)(prev / touchScreenTick) != (int)(position / touchScreenTick));
         }
-#else
-        if (Input.GetMouseButton(0) && !prevPress)
-        {
-            tick = false;
-        }
-        if (!Input.GetMouseButton(0) && prevPress)
-        {
-            if (!tick)
-            {
-                press = true;
-            }
-        }
-        if (Input.GetMouseButton(0))
-        {
-            prev = position;
-            position += Input.GetAxis("Mouse Y") * 3;
-            update = ((int)(prev / touchScreenTick) != (int)(position / touchScreenTick));
-        }
-#endif
         if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.DownArrow))
 
         {
@@ -125,10 +105,6 @@ public class MainMenuManger : MonoBehaviour
                 MainMenuBottomScreenManager.Instance.next.text = items[selection + 1];
             }
         }
-#if !UNITY_EDITOR
         prevPress = Input.touchCount>0;
-#else
-        prevPress = Input.GetMouseButton(0);
-#endif
     }
 }

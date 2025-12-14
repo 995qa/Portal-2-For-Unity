@@ -9,11 +9,7 @@ public class FPSManager : MonoBehaviour
 
 	void Update () 
 	{
-#if !UNITY_EDITOR
-		if (UnityEngine.N3DS.GamePad.GetButtonTrigger(N3dsButton.Y)&& UnityEngine.N3DS.GamePad.GetButtonHold(N3dsButton.X))
-#else
 		if (Input.GetKeyDown(KeyCode.F2))
-#endif
         {
 			show = !show;
 			if (show)
