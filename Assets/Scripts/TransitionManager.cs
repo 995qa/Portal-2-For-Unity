@@ -11,6 +11,7 @@ public class TransitionManager : MonoBehaviour
     [SerializeField] private AudioClip c;
     public bool bottomScreen;
     private float progess;
+    private bool t;
     public static TransitionManager Instance
     {
         get; private set;
@@ -34,13 +35,17 @@ public class TransitionManager : MonoBehaviour
     }
     public void Scene(string name, Sprite image = null, bool useBottomScreen = false, Sprite bottomImage = null)
     {
-        if (image == null)
+        if (!t)
         {
-            StartCoroutine(LoadScene(name));
-        }
-        else
-        {
-            StartCoroutine(LoadSceneImage(name, image, useBottomScreen, bottomImage));
+            t = true;
+            if (image == null)
+            {
+                StartCoroutine(LoadScene(name));
+            }
+            else
+            {
+                StartCoroutine(LoadSceneImage(name, image, useBottomScreen, bottomImage));
+            }
         }
     }
     private IEnumerator FadeIn()
@@ -85,6 +90,7 @@ public class TransitionManager : MonoBehaviour
             fade[1].color = new Color(fade[1].color.r, fade[1].color.g, fade[1].color.b, 1 - (timer / fadeInHoldFadeOut.z));
             yield return null;
         }
+        t = false;
     }
     private IEnumerator LoadSceneImage(string name, Sprite imageSprite, bool useBottomScreen, Sprite bottomImage)
     {
@@ -166,6 +172,7 @@ public class TransitionManager : MonoBehaviour
             fade[1].color = new Color(fade[1].color.r, fade[1].color.g, fade[1].color.b, 1 - (timer / fadeInHoldFadeOut.x));
             yield return null;
         }
+        t = false;
     }
     public void LoadSceneAsync(string sceneName)
     {

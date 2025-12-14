@@ -59,10 +59,9 @@ public class PlayerPortalManager : MonoBehaviour
             portalable = (portalableMask.value & (1 << hit.transform.gameObject.layer)) != 0;
             if (portalable)
             {
-                portals[color].transform.position = hit.point + hit.normal * offset;
-                portals[color].transform.rotation = Quaternion.LookRotation(hit.normal);
-                portalScripts[color].placed = true;
-                return true;
+                Vector3 position = hit.point + hit.normal * offset;
+                Quaternion rotation = Quaternion.LookRotation(hit.normal);
+                return portalScripts[color].Place(position, rotation);
             }
         }
         return false;
