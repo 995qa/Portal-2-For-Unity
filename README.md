@@ -12,4 +12,4 @@ To set up the game, clone the repo to your computer, then open unity, then click
 
 # INSTALL
 
-Open FBi on your 3DS and select "Remote Install">"Scan From QR Code". Navigate to the Releases tab [https://github.com/Drake-Rochelle/Portal-2-For-3DS/releases](here) and scan the QR code for the version you wish to install.
+Open FBi on your 3DS and select "Remote Install">"Scan From QR Code". Navigate to the Releases tab [here](https://github.com/Drake-Rochelle/Portal-2-For-3DS/releases) and scan the QR code for the version you wish to install.
