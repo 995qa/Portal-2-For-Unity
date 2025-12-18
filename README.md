@@ -4,7 +4,7 @@
 
 # SETUP
 
-This game was made in Unity 6000.2.1f1. 
+This game was made in Unity 5.6.6f1
 
 To set up the game, clone the repo to your computer, then open unity, then click "Add">"Add Project From Disk". Then select the project folder. Then, you can open the project and edit/build as you would with any other.
 
